@@ -127,6 +127,48 @@ function useReveal(threshold = 0.15) {
   return [ref, inView]
 }
 
+function TypingRole() {
+  const roles = ['Full-Stack Developer', 'Software Engineer', 'System Architect']
+  const [currentRoleIndex, setCurrentRoleIndex] = useState(0)
+  const [displayedText, setDisplayedText] = useState('')
+  const [isDeleting, setIsDeleting] = useState(false)
+  
+  useEffect(() => {
+    let timer;
+    const fullText = roles[currentRoleIndex];
+    
+    const type = () => {
+      if (!isDeleting) {
+        setDisplayedText(fullText.slice(0, displayedText.length + 1));
+        if (displayedText === fullText) {
+          timer = setTimeout(() => setIsDeleting(true), 1500);
+        } else {
+          timer = setTimeout(type, 80);
+        }
+      } else {
+        setDisplayedText(fullText.slice(0, displayedText.length - 1));
+        if (displayedText === '') {
+          setIsDeleting(false);
+          setCurrentRoleIndex((prev) => (prev + 1) % roles.length);
+          timer = setTimeout(type, 100);
+        } else {
+          timer = setTimeout(type, 40);
+        }
+      }
+    };
+    
+    timer = setTimeout(type, isDeleting ? 40 : 80);
+    return () => clearTimeout(timer);
+  }, [displayedText, isDeleting, currentRoleIndex]);
+
+  return (
+    <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--coral)', position: 'relative' }}>
+      {displayedText}
+      <span className="blinking-cursor" style={{ fontWeight: 500, color: 'var(--coral)' }}>|</span>
+    </span>
+  )
+}
+
 // ─── NAV ─────────────────────────────────────────────────────────────────────
 function Nav() {
   const [scrolled, setScrolled] = useState(false)
@@ -143,7 +185,7 @@ function Nav() {
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
         padding: '0 2rem', height: 72,
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        background: scrolled ? 'rgba(249, 249, 248, 0.85)' : 'transparent',
+        background: scrolled ? 'rgba(8, 8, 12, 0.92)' : 'transparent',
         backdropFilter: scrolled ? 'blur(16px)' : 'none',
         borderBottom: scrolled ? '1px solid var(--border)' : 'none',
         transition: 'all 0.3s ease',
@@ -175,9 +217,9 @@ function Nav() {
           <span style={{ borderBottom: '2px solid var(--text-primary)' }}>EN</span>
         </div>
         <a href="mailto:krishnadas10.official@gmail.com"
-          style={{ padding: '0.65rem 1.4rem', borderRadius: 50, color: 'var(--white)', background: 'var(--black)', fontSize: '0.88rem', transition: 'all 0.2s', fontWeight: 600 }}
-          onMouseEnter={e => { e.target.style.transform = 'translateY(-1px)'; e.target.style.opacity = '0.9' }}
-          onMouseLeave={e => { e.target.style.transform = 'translateY(0)'; e.target.style.opacity = '1' }}>
+          style={{ padding: '0.65rem 1.4rem', borderRadius: 50, color: 'var(--white)', background: 'var(--coral)', fontSize: '0.88rem', transition: 'all 0.2s', fontWeight: 600 }}
+          onMouseEnter={e => { e.target.style.boxShadow = '0 0 15px rgba(139, 92, 246, 0.5)'; e.target.style.transform = 'translateY(-1px)' }}
+          onMouseLeave={e => { e.target.style.boxShadow = 'none'; e.target.style.transform = 'translateY(0)' }}>
           krishnadas10.official@gmail.com
         </a>
       </div>
@@ -208,16 +250,20 @@ function Hero() {
       <div style={{ position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', maxWidth: 900 }}>
         {/* Intro */}
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: 'clamp(0.9rem, 2vw, 1.15rem)', fontWeight: 500, color: 'var(--text-secondary)', marginBottom: '1rem', fontFamily: 'var(--font-sans)' }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: 'clamp(0.9rem, 2vw, 1.15rem)', fontWeight: 500, color: 'var(--text-secondary)', marginBottom: '1rem', fontFamily: 'var(--font-sans)', flexWrap: 'wrap', justifyContent: 'center' }}
         >
-          <span>👋</span> my name is Krishnadas
+          <span>👋</span> my name is Krishnadas and I am a <TypingRole />
         </motion.div>
 
         {/* The Stack Container */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', margin: '2rem 0' }}>
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', margin: '2rem 0' }}>
 
           <h1 style={{
             fontFamily: 'var(--font-display)',
@@ -243,7 +289,7 @@ function Hero() {
               margin: '0 0.3rem',
               boxShadow: '0 4px 15px rgba(0,0,0,0.05)'
             }}>
-              <span style={{ fontSize: 'clamp(1rem, 3.2vw, 2.2rem)', fontWeight: 800 }}>↗</span>
+              <span style={{ fontSize: 'clamp(1rem, 3.2vw, 2.2rem)', fontWeight: 800, color: '#101018' }}>↗</span>
             </span>
             eloper
           </h1>
@@ -260,10 +306,14 @@ function Hero() {
             & Engineer
           </h1>
 
-        </div>
+        </motion.div>
 
         {/* Lower Info & Logos Row */}
-        <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '2rem', padding: '0 2rem', marginBottom: '2.5rem' }}>
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.16, ease: [0.16, 1, 0.3, 1] }}
+          style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '2rem', padding: '0 2rem', marginBottom: '2.5rem' }}>
           {/* Location */}
           <div style={{ fontSize: 'clamp(1rem, 2.2vw, 1.25rem)', color: 'var(--text-primary)', fontFamily: 'var(--font-sans)', fontWeight: 500 }}>
             based in Kerala, India.
@@ -276,16 +326,20 @@ function Hero() {
             <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 300, letterSpacing: '0.05em', fontSize: '1.15rem', opacity: 0.3 }}>docker</span>
             <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 600, fontSize: '1.1rem', opacity: 0.3 }}>AWS</span>
           </div>
-        </div>
+        </motion.div>
 
         {/* Bottom CTA Buttons */}
-        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+          style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <a href="#contact"
             style={{
               padding: '0.9rem 2.2rem',
               borderRadius: '50px',
-              background: 'var(--black)',
-              color: 'var(--white)',
+              background: 'var(--white)',
+              color: '#08080C',
               fontWeight: 600,
               fontSize: '0.92rem',
               transition: 'all 0.2s',
@@ -293,8 +347,8 @@ function Hero() {
               display: 'inline-flex',
               alignItems: 'center'
             }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.12)' }}
-            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.06)' }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 0 20px rgba(255,255,255,0.4)' }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}
           >
             You need a developer
           </a>
@@ -302,21 +356,21 @@ function Hero() {
             style={{
               padding: '0.9rem 2.2rem',
               borderRadius: '50px',
-              border: '1.5px solid var(--black)',
+              border: '1.5px solid var(--white)',
               background: 'transparent',
-              color: 'var(--black)',
+              color: 'var(--white)',
               fontWeight: 600,
               fontSize: '0.92rem',
               transition: 'all 0.2s',
               display: 'inline-flex',
               alignItems: 'center'
             }}
-            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.background = 'rgba(0,0,0,0.02)' }}
-            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = 'transparent' }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 0 20px rgba(139, 92, 246, 0.3)'; e.currentTarget.style.background = 'rgba(139,92,246,0.1)' }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; e.currentTarget.style.background = 'transparent' }}
           >
             You need a consultant
           </a>
-        </div>
+        </motion.div>
       </div>
     </section>
   )
@@ -333,7 +387,7 @@ function About() {
   ]
   return (
     <section id="about" ref={ref} style={{ padding: '8rem 2rem', maxWidth: 1100, margin: '0 auto' }}>
-      <motion.div initial={{ opacity: 0, y: 40 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7 }}>
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '4rem' }}>
           <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>01.</span>
           <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 400, letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>About Me</h2>
@@ -365,7 +419,7 @@ function About() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
             {stats.map(({ n, label }, i) => (
-              <motion.div key={label} initial={{ opacity: 0, scale: 0.95 }} animate={inView ? { opacity: 1, scale: 1 } : {}} transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
+              <motion.div key={label} initial={{ opacity: 0, scale: 0.95 }} animate={inView ? { opacity: 1, scale: 1 } : {}} transition={{ delay: 0.1 + i * 0.05, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                 className="envato-card"
                 style={{ padding: '2rem 1.5rem', textAlign: 'center', border: '1px solid var(--border)', background: 'var(--bg2)' }}>
                 <div style={{ fontFamily: 'var(--font-display)', fontSize: '2.8rem', fontWeight: 800, color: 'var(--text-primary)', lineHeight: 1 }}>{n}</div>
@@ -384,7 +438,7 @@ function Experience() {
   const [ref, inView] = useReveal()
   return (
     <section id="experience" ref={ref} style={{ padding: '6rem 2rem 8rem', maxWidth: 900, margin: '0 auto' }}>
-      <motion.div initial={{ opacity: 0, y: 40 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7 }}>
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '4rem' }}>
           <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>02.</span>
           <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 400, letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>Experience</h2>
@@ -394,7 +448,7 @@ function Experience() {
           {/* Thin gray timeline line */}
           <div style={{ position: 'absolute', left: 4, top: 10, bottom: 10, width: 1, background: 'var(--border)' }} />
           {EXP.map((e, i) => (
-            <motion.div key={e.company} initial={{ opacity: 0, x: -20 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ delay: 0.2 + i * 0.2 }}
+            <motion.div key={e.company} initial={{ opacity: 0, x: -15 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ delay: 0.1 + i * 0.08, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               style={{ marginBottom: '4rem', position: 'relative' }}>
               {/* Styled dot */}
               <div style={{ position: 'absolute', left: -2.5 - 24, top: 8, width: 10, height: 10, borderRadius: '50%', background: 'var(--text-primary)', zIndex: 2 }} />
@@ -420,7 +474,7 @@ function Experience() {
             </motion.div>
           ))}
           {/* Education */}
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ delay: 0.6 }}
+          <motion.div initial={{ opacity: 0, x: -15 }} animate={inView ? { opacity: 1, x: 0 } : {}} transition={{ delay: 0.3, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             style={{ position: 'relative' }}>
             <div style={{ position: 'absolute', left: -2.5 - 24, top: 8, width: 10, height: 10, borderRadius: '50%', background: 'var(--border)', zIndex: 2 }} />
             <div style={{ marginLeft: '0.5rem' }}>
@@ -447,7 +501,7 @@ function Skills() {
   return (
     <section id="skills" ref={ref} style={{ padding: '6rem 2rem 8rem', background: 'var(--bg2)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-        <motion.div initial={{ opacity: 0, y: 40 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7 }}>
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '4rem' }}>
             <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>03.</span>
             <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 400, letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>Skills & Technologies</h2>
@@ -457,7 +511,7 @@ function Skills() {
             {Object.entries(SKILLS).map(([cat, tags], ci) => {
               const Icon = SKILL_ICONS[cat]
               return (
-                <motion.div key={cat} initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.1 * ci, duration: 0.5 }}
+                <motion.div key={cat} initial={{ opacity: 0, y: 15 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.05 * ci, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                   className="envato-card"
                   style={{ padding: '2.2rem 2rem', border: '1px solid var(--border)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginBottom: '1.5rem' }}>
@@ -467,12 +521,16 @@ function Skills() {
                     <span style={{ fontFamily: 'var(--font-sans)', fontWeight: 700, fontSize: '1.1rem', color: 'var(--text-primary)' }}>{cat}</span>
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
-                    {tags.map(tag => (
-                      <span key={tag} style={{ padding: '0.4rem 0.9rem', borderRadius: 50, background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--text-primary)', fontSize: '0.8rem', fontFamily: 'var(--font-sans)', fontWeight: 500, transition: 'all 0.2s', cursor: 'default' }}
-                        onMouseEnter={e => { e.target.style.background = 'var(--text-primary)'; e.target.style.color = 'var(--white)' }}
+                    {tags.map((tag, idx) => (
+                      <motion.span key={tag}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={inView ? { opacity: 1, y: 0 } : {}}
+                        transition={{ delay: ci * 0.05 + idx * 0.02, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                        style={{ padding: '0.4rem 0.9rem', borderRadius: 50, background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--text-primary)', fontSize: '0.8rem', fontFamily: 'var(--font-sans)', fontWeight: 500, transition: 'all 0.2s', cursor: 'default' }}
+                        onMouseEnter={e => { e.target.style.background = 'var(--text-primary)'; e.target.style.color = '#101018' }}
                         onMouseLeave={e => { e.target.style.background = 'var(--bg)'; e.target.style.color = 'var(--text-primary)' }}>
                         {tag}
-                      </span>
+                      </motion.span>
                     ))}
                   </div>
                 </motion.div>
@@ -491,7 +549,7 @@ function Projects() {
   const [active, setActive] = useState(null)
   return (
     <section id="projects" ref={ref} style={{ padding: '8rem 2rem', maxWidth: 1100, margin: '0 auto' }}>
-      <motion.div initial={{ opacity: 0, y: 40 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7 }}>
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '4rem' }}>
           <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>04.</span>
           <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'clamp(2rem, 4vw, 3rem)', fontWeight: 400, letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>Featured Projects</h2>
@@ -500,7 +558,7 @@ function Projects() {
         <div style={{ display: 'grid', gap: '2rem' }}>
           {PROJECTS.map((p, i) => (
             <motion.div key={p.name}
-              initial={{ opacity: 0, y: 30 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.1 * i, duration: 0.5 }}
+              initial={{ opacity: 0, y: 15 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.05 * i, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               onClick={() => setActive(active === i ? null : i)}
               className="envato-card"
               style={{
@@ -567,7 +625,7 @@ function Contact() {
   ]
   return (
     <section id="contact" ref={ref} style={{ padding: '6rem 2rem 8rem', maxWidth: 700, margin: '0 auto', textAlign: 'center' }}>
-      <motion.div initial={{ opacity: 0, y: 40 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.7 }}>
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '4rem', justifyContent: 'center' }}>
           <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
           <span style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>05.</span>
@@ -578,9 +636,9 @@ function Contact() {
           I'm currently open to new opportunities. Whether you have a role in mind, a project to discuss, or just want to say hello — my inbox is open.
         </p>
         <a href="mailto:krishnadas10.official@gmail.com"
-          style={{ display: 'inline-block', padding: '1rem 2.8rem', borderRadius: 50, color: 'var(--white)', background: 'var(--black)', fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '0.98rem', marginBottom: '4.5rem', transition: 'all 0.2s', boxShadow: '0 4px 15px rgba(0,0,0,0.06)' }}
-          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.12)' }}
-          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.06)' }}>
+          style={{ display: 'inline-block', padding: '1rem 2.8rem', borderRadius: 50, color: 'var(--white)', background: 'var(--coral)', fontFamily: 'var(--font-sans)', fontWeight: 600, fontSize: '0.98rem', marginBottom: '4.5rem', transition: 'all 0.2s', boxShadow: '0 4px 15px rgba(0,0,0,0.06)' }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 0 20px rgba(139, 92, 246, 0.4)' }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none' }}>
           Say Hello →
         </a>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
@@ -645,10 +703,10 @@ export default function App() {
       </main>
       <Footer />
       {/* Floating Elements from mockup */}
-      <a href="#contact" style={{ position: 'fixed', bottom: '2rem', left: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#FFFFFF', border: '1px solid rgba(0,0,0,0.08)', padding: '0.8rem 1.6rem', borderRadius: '50px', boxShadow: '0 10px 25px rgba(0,0,0,0.06)', fontSize: '0.88rem', color: 'var(--text-primary)', fontWeight: 600, zIndex: 99, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
+      <a href="#contact" style={{ position: 'fixed', bottom: '2rem', left: '2rem', display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg2)', border: '1px solid var(--border)', padding: '0.8rem 1.6rem', borderRadius: '50px', boxShadow: '0 10px 25px rgba(0,0,0,0.2)', fontSize: '0.88rem', color: 'var(--text-primary)', fontWeight: 600, zIndex: 99, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
         <span>↗</span> Visit site
       </a>
-      <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ position: 'fixed', bottom: '2rem', right: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '50px', height: '50px', background: '#FFFFFF', border: '1px solid rgba(0,0,0,0.08)', borderRadius: '50%', boxShadow: '0 10px 25px rgba(0,0,0,0.06)', cursor: 'pointer', color: 'var(--text-primary)', zIndex: 99, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
+      <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} style={{ position: 'fixed', bottom: '2rem', right: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '50px', height: '50px', background: 'var(--bg2)', border: '1px solid var(--border)', borderRadius: '50%', boxShadow: '0 10px 25px rgba(0,0,0,0.2)', cursor: 'pointer', color: 'var(--text-primary)', zIndex: 99, transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" /></svg>
       </button>
     </>

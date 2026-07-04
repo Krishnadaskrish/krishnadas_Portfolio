@@ -1,33 +1,25 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg: #F9F9F8;
-  --bg2: #FFFFFF;
-  --bg3: #F0EFEA;
-  --yellow: #F5C453;
-  --coral: #FF5A5F;
+  --bg: #08080C;             /* Deep dark space background */
+  --bg2: #101018;            /* Card space gray */
+  --bg3: #161622;            /* Dark highlighted background */
+  --yellow: #38BDF8;         /* Electric sky blue */
+  --coral: #8B5CF6;          /* Neon violet/purple */
   --black: #000000;
   --white: #FFFFFF;
-  --text-primary: #151515;
-  --text-secondary: #656562;
-  --border: #E5E5E2;
-  --border-dark: #151515;
-
-  --font-serif: 'DM Serif Display', Georgia, serif;
+  --text-primary: #F8FAFC;   /* Crisp slate white */
+  --text-secondary: #94A3B8; /* Slate gray */
+  --border: rgba(255, 255, 255, 0.08); /* Subtle high-tech borders */
+  --border-dark: #8B5CF6;    /* Glowing violet accent border */
+  
+  --font-serif: 'Plus Jakarta Sans', sans-serif;
   --font-sans: 'Plus Jakarta Sans', sans-serif;
   --font-display: 'Syne', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 }
 
-html {
-  scroll-behavior: smooth;
-}
+html { scroll-behavior: smooth; }
 
 body {
   background: var(--bg);
@@ -38,76 +30,80 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-::selection {
-  background: var(--text-primary);
-  color: var(--bg);
-}
+::selection { background: var(--coral); color: var(--white); }
 
-::-webkit-scrollbar {
-  width: 8px;
-}
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: rgba(139, 92, 246, 0.2); border: 2px solid var(--bg); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--coral); }
 
-::-webkit-scrollbar-track {
-  background: var(--bg);
-}
+a { color: inherit; text-decoration: none; }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.1);
-  border: 2px solid var(--bg);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-primary);
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-/* Editorial backgrounds & grids */
+/* Grid patterns for subtle futuristic tech vibe */
 .pattern-stripes-pink {
-  background: repeating-linear-gradient(-45deg,
-      #FAF9F6,
-      #FAF9F6 10px,
-      #EBEAE6 10px,
-      #EBEAE6 20px);
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--bg2),
+    var(--bg2) 10px,
+    var(--bg3) 10px,
+    var(--bg3) 20px
+  );
 }
 
 .pattern-stripes-cobalt {
-  background: repeating-linear-gradient(-45deg,
-      #FFFFFF,
-      #FFFFFF 12px,
-      #F0EFEA 12px,
-      #F0EFEA 24px);
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--bg),
+    var(--bg) 12px,
+    var(--bg2) 12px,
+    var(--bg2) 24px
+  );
 }
 
 .pattern-grid-lime {
-  background-image: radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: radial-gradient(rgba(139, 92, 246, 0.12) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
 .pattern-grid-pink {
-  background-image: radial-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px);
-  background-size: 24px 24px;
+  background-image: radial-gradient(rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 
-/* Minimalist Editorial Card designs */
+/* Premium developer glow cards */
 .envato-card {
   position: relative;
   background: var(--bg2);
   border: 1px solid var(--border);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.envato-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  padding: 1.5px;
+  background: linear-gradient(135deg, transparent, rgba(139, 92, 246, 0.15), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
 }
 
 .envato-card:hover {
   transform: translateY(-4px);
-  border-color: var(--text-primary);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+  border-color: rgba(139, 92, 246, 0.3);
+  box-shadow: 0 12px 30px rgba(139, 92, 246, 0.08);
+}
+
+.envato-card:hover::before {
+  opacity: 1;
 }
 
 .envato-card-pink {
@@ -116,19 +112,52 @@ a {
   border: 1px solid var(--border);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.envato-card-pink::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  padding: 1.5px;
+  background: linear-gradient(135deg, transparent, rgba(56, 189, 248, 0.15), transparent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
 }
 
 .envato-card-pink:hover {
   transform: translateY(-4px);
-  border-color: var(--text-primary);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+  border-color: rgba(56, 189, 248, 0.3);
+  box-shadow: 0 12px 30px rgba(56, 189, 248, 0.08);
+}
+
+.envato-card-pink:hover::before {
+  opacity: 1;
 }
 
 /* Outlined heading style */
 .text-outline {
-  -webkit-text-stroke: 1.5px var(--text-primary);
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.25);
   color: transparent;
   font-family: var(--font-display);
+  transition: -webkit-text-stroke 0.3s;
+}
+
+.text-outline:hover {
+  -webkit-text-stroke: 1.5px var(--coral);
+}
+
+/* Typing cursor blink animation */
+@keyframes blink {
+  50% { opacity: 0; }
+}
+.blinking-cursor {
+  animation: blink 0.8s infinite;
+  margin-left: 2px;
 }
